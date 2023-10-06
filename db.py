@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import edgedb
 
+
 @dataclass
 class DSN:
     user: str
