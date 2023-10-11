@@ -54,12 +54,12 @@ class Role(enum.Enum):
 async def add_payment_to_user(
     client: edgedb.AsyncIOClient,
     *,
-    userId: int,
+    userId: uuid.UUID,
     paymentId: uuid.UUID,
 ) -> ResultUUID | None:
     return await client.query_single(
         """\
-        with user := (select User filter .UserID = <int64>$userId) update user set { UserPayment += (select Payment filter .id = <uuid>$paymentId)};\
+        with user := (select User filter .id = <uuid>$userId) update user set { UserPayment += (select Payment filter .id = <uuid>$paymentId)};\
         """,
         userId=userId,
         paymentId=paymentId,
