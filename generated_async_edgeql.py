@@ -124,14 +124,25 @@ async def get_user_by_tgid(
     client: edgedb.AsyncIOClient,
     *,
     tgid: int,
-) -> list[ResultUUID]:
-    return await client.query(
+) -> ResultUUID:
+    return await client.query_single(
         """\
         select User filter .UserID = <int64>$tgid\
         """,
         tgid=tgid,
     )
 
+async def get_user_by_chat_id(
+    client: edgedb.AsyncIOClient,
+    *,
+    chat_id: int,
+) -> ResultUUID:
+    return await client.query_single(
+        """\
+        select User filter .ChatID = <int64>$chat_id\
+        """,
+        chat_id=chat_id,
+    )
 
 async def get_user_telegram_id(
     client: edgedb.AsyncIOClient,
@@ -175,17 +186,20 @@ async def insert_user(
     client: edgedb.AsyncIOClient,
     *,
     userId: int,
+    chatId: int,
     userRole: Role,
 ) -> ResultUUID:
     return await client.query_single(
         """\
         insert User {
             UserID := <int64>$userId,
-            UserRole := <EUserRole>$userRole
+            UserRole := <EUserRole>$userRole,
+            ChatID := <int64>$chatId
         };\
         """,
         userId=userId,
         userRole=userRole,
+        chatId=chatId
     )
 
 
