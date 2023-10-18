@@ -80,6 +80,20 @@ async def delete_payment(
         """,
         paymentId=paymentId,
     )
+    
+
+async def finish_payment(
+    client: edgedb.AsyncIOClient,
+    *,
+    paymentId: uuid.UUID,
+) -> ResultUUID | None:
+    return await client.query_single(
+        """\
+        with payment := (select Payment filter .id = <uuid>$paymentId) \
+        update payment set { Finished := True } \
+        """,
+        paymentId=paymentId,
+    )
 
 
 async def delete_user_by_userid(
