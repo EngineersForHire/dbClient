@@ -5,11 +5,16 @@ description = "edgedb client implementation"
 authors = ["Kom46 <kommunizm46@gmail.com>"]
 license = "GPLv3"
 readme = "README.md"
+packages = [{include = "dbclient"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
 edgedb = "^1.8.0"
 
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.0.0"
+requests-mock = "^1.11.0"
 
 [build-system]
 requires = ["poetry-core"]
