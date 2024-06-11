@@ -1,5 +1,3 @@
-import asyncio
-import db
+from dbclient.db import dbCLient
 
-event_loop = asyncio.get_event_loop()
-edb_client = event_loop.run_until_complete(db.dbCLient())
+edb_client = dbCLient()

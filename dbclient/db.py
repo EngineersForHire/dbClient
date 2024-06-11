@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import edgedb
+import asyncio
 
 
 @dataclass
@@ -20,9 +21,9 @@ class dbCLient:
     def dsn(self):
         return self.__dsn
 
-    async def __init__(self, dsn: DSN | str | None = None) -> None:
+    def __init__(self, dsn: DSN | str | None = None) -> None:
         if dsn is not None:
-            await self.connect_to_db(dsn=dsn)
+            asyncio.get_event_loop().run_until_complete(self.connect_to_db(dsn=dsn))
 
     def dsn_to_str(self, dsn: DSN):
         dsnStr = f"edgedb://{dsn.user}:{dsn.password}@{dsn.host}:{dsn.port}/{dsn.database}"
