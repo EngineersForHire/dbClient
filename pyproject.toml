@@ -10,6 +10,7 @@ packages = [{include = "dbclient"}]
 [tool.poetry.dependencies]
 python = "^3.11"
 edgedb = "^1.8.0"
+pytest = "^8.2.2"
 
 
 [tool.poetry.group.test.dependencies]
