@@ -1,5 +1,6 @@
 from dbclient import edb_client
 from dbclient.db import dbCLient, DSN
+import edgedb
 
 # to test instance connection you must create it first with 'edgedb instance create test'
 # and then retrieve credentials with 'edgedb instance credentials -I test --json'
@@ -14,11 +15,39 @@ instance_credentials = {
     "tls_security": "default"
 }
 
+def get_db_client() -> dbCLient:
+    """
+    Returns a edgedb client object.
+
+    Args:
+        instance_credentials (dict): A dictionary containing the required credentials for the edgedb instance.
+            - user: The username to use when connecting to the database.
+            - password: The password to use when connecting to the database.
+            - host: The hostname or IP address of the database server.
+            - port: The port number to use when connecting to the database.
+            - database: The name of the database to connect to.
+            - tls_ca: A path to a CA certificate file for TLS encryption.
+
+    Returns:
+        client (edgedb): The edgedb client object.
+    """
+    dsn = DSN(instance_credentials["user"], instance_credentials["password"], instance_credentials["host"],
+              instance_credentials["port"], instance_credentials["database"], instance_credentials["tls_ca"])
+    return dbCLient(dsn)
+
+
 def test_edb_client_is_created() -> None:
     assert isinstance(edb_client, dbCLient)
 
 def test_dbCLient_init() -> None:
-    dsn = DSN(instance_credentials["user"], instance_credentials["password"], instance_credentials["host"],
-              instance_credentials["port"], instance_credentials["database"], instance_credentials["tls_ca"])
-    client = dbCLient(dsn)
+    client = get_db_client()
     assert client is not None
+
+def test_decorator() -> None:
+    client = get_db_client()
+    
+    @client.run_edgedb_func
+    def func(edb_client: edgedb.AsyncIOClient, *args, **kwargs) -> None:
+        assert edb_client is not None
+    
+    func(edb_client=client)
