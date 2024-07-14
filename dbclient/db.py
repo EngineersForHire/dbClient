@@ -27,7 +27,7 @@ class dbCLient:
             evloop = asyncio.get_event_loop()
             if (evloop is not None) and evloop.is_running():
                 try:
-                    asyncio.wait_for(self.connect_to_db(dsn=dsn), 10)
+                    evloop.run_until_complete(asyncio.wait_for(self.connect_to_db(dsn=dsn), 10))
                 except TimeoutError:
                     print("Failed to create edgedb client!")
             else:
