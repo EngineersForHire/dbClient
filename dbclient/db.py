@@ -21,17 +21,16 @@ class dbCLient:
     def dsn(self):
         return self.__dsn
 # TODO: add creation DSN from json
-    def __init__(self, dsn: DSN | str | None = None) -> None:
+    def __init__(self, loop = asyncio.new_event_loop(), dsn: DSN | str | None = None) -> None:
         if dsn is not None:
             print(dsn)
-            evloop = asyncio.get_event_loop()
-            if (evloop is not None) and evloop.is_running():
+            if (loop is not None) and loop.is_running():
                 try:
-                    evloop.run_until_complete(asyncio.wait_for(self.connect_to_db(dsn=dsn), 10))
+                    loop.run_until_complete(asyncio.wait_for(self.connect_to_db(dsn=dsn), 10))
                 except TimeoutError:
                     print("Failed to create edgedb client!")
             else:
-                evloop.run_until_complete(self.connect_to_db(dsn=dsn))
+                loop.run_until_complete(self.connect_to_db(dsn=dsn))
             
 
     def dsn_to_str(self, dsn: DSN):
